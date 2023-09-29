@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>To-Do-List App</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+    <div class="main-wrapper">
+        <div class="container">
+            <div class="todo-app">
+                <h2>To-Do List <img src="images/icon.png"></h2>
+                <div class="row">
+                    <input type="text" id="toDoApp-input-box" placeholder="Add your text">
+                    <button id="toDoApp-button" onclick="addTask()">Add</button>
+                </div>
+                <ul id="list-container">
+                    <!-- <li class="checked">Task 1</li>
+                    <li>Task 2</li>
+                    <li>Task 3</li>
+                    <li>Task 4</li> -->
+                </ul>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="search">
+                <input id="weatherApp-input-box" type="text" placeholder="Enter city name" spellcheck="false">
+                <button id="weatherApp-button"><img src="/images/imgWeather/search.png" alt=""></button>
+            </div>
+            <div class="error">
+                <p>City not found</p>
+            </div>
+            <div class="weather">
+                <img src="/images/imgWeather/rain.png" class="weather-icon">
+                <h1 class="temp">30°C</h1>
+                <h2 class="city">Greece</h2>
+                <div class="details">
+                    <div class="col">
+                        <img src="/images/imgWeather/humidity.png">
+                        <div>
+                            <p class="humidity">50%</p>
+                            <p>Humidity</p>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <img src="/images/imgWeather/wind.png">
+                        <div>
+                            <p class="wind">15 km/h</p>
+                            <p>Wind speed</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="scripts/script.js"></script>
+    <script>
+
+        /// This script is for the Weather app customization ...
+
+        const apiKey = "7f5eae58fa65109c168e66f54f1f5a68";
+        const apiUrl = "https://api.openweathermap.org/data/2.5/weather?units=metric&q=";
+        const searchBox = document.querySelector(".search #weatherApp-input-box");
+        const searchBtn = document.querySelector(".search #weatherApp-button");
+        const weatherIcon = document.querySelector(".weather-icon");
+
+        async function checkedWeather(city) {
+            const response = await fetch(apiUrl + city + `&appid=${apiKey}`);
+
+            // Check if the user add a wrong city name
+            if (response.status == 404) {
+                document.querySelector(".error").style.display = "block";
+                document.querySelector(".weather").style.display = "none";
+            } else {
+
+                var data = await response.json();
+
+                document.querySelector(".city").innerHTML = data.name;
+                document.querySelector(".temp").innerHTML = Math.round(data.main.temp) + "°C";
+                document.querySelector(".humidity").innerHTML = data.main.humidity + "%";
+                document.querySelector(".wind").innerHTML = data.wind.speed + " km/h";
+
+                // update image (weather/main/...)
+                if (data.weather[0].main == "Clouds") {
+                    weatherIcon.src = "/images/imgWeather/clouds.png";
+                } else if (data.weather[0].main == "Clear") {
+                    weatherIcon.src = "/images/imgWeather/clear.png";
+                } else if (data.weather[0].main == "Rain") {
+                    weatherIcon.src = "/images/imgWeather/rain.png";
+                } else if (data.weather[0].main == "Drizzle") {
+                    weatherIcon.src = "/images/imgWeather/drizzle.png";
+                } else if (data.weather[0].main == "Mist") {
+                    weatherIcon.src = "/images/imgWeather/mist.png";
+                }
+
+                document.querySelector(".weather").style.display = "block";
+                document.querySelector(".error").style.display = "none";
+            }
+        }
+        searchBtn.addEventListener("click", () => {
+            checkedWeather(searchBox.value);
+        });
+    </script>
+</body>
+
+</html>
